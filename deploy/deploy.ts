@@ -1,33 +1,22 @@
 import { Address, Deployer } from "../web3webdeploy/types";
-import { DeployCounterSettings, deployCounter } from "./counters/Counter";
 import {
-  DeployProxyCounterSettings,
-  deployProxyCounter,
-} from "./counters/ProxyCounter";
-import {
-  SetInitialCounterValueSettings,
-  setInitialCounterValue,
-} from "./counters/SetInitialCounterValue";
+  DeployDCIReserveSettings,
+  deployDCIReserve,
+} from "./internal/DCIReserve";
 
-export interface DeploymentSettings {
-  counterSettings: DeployCounterSettings;
-  proxyCounterSettings: Omit<DeployProxyCounterSettings, "counter">;
-  setInitialCounterValueSettings: Omit<
-    SetInitialCounterValueSettings,
-    "counter"
-  >;
+export interface DCIDeploymentSettings {
+  dciReserveSettings: DeployDCIReserveSettings;
   forceRedeploy?: boolean;
 }
 
-export interface Deployment {
-  counter: Address;
-  proxyCounter: Address;
+export interface DCIDeployment {
+  dciReserve: Address;
 }
 
 export async function deploy(
   deployer: Deployer,
-  settings?: DeploymentSettings
-): Promise<Deployment> {
+  settings?: DCIDeploymentSettings
+): Promise<DCIDeployment> {
   if (settings?.forceRedeploy !== undefined && !settings.forceRedeploy) {
     const existingDeployment = await deployer.loadDeployment({
       deploymentName: "latest.json",
@@ -37,24 +26,13 @@ export async function deploy(
     }
   }
 
-  const counter = await deployCounter(
+  const dciReserve = await deployDCIReserve(
     deployer,
-    settings?.counterSettings ?? {}
+    settings?.dciReserveSettings ?? {}
   );
-  const proxyCounter = await deployProxyCounter(deployer, {
-    ...(settings?.proxyCounterSettings ?? {}),
-    counter: counter,
-  });
-  await setInitialCounterValue(deployer, {
-    ...(settings?.setInitialCounterValueSettings ?? {
-      counterValue: BigInt(3),
-    }),
-    counter: counter,
-  });
 
-  const deployment = {
-    counter: counter,
-    proxyCounter: proxyCounter,
+  const deployment: DCIDeployment = {
+    dciReserve: dciReserve,
   };
   await deployer.saveDeployment({
     deploymentName: "latest.json",
