@@ -3,14 +3,20 @@ import {
   DeployDCIReserveSettings,
   deployDCIReserve,
 } from "./internal/DCIReserve";
+import {
+  DeployDCIVestingManagerSettings,
+  deployDCIVestingManager,
+} from "./internal/DCIVestingManager";
 
 export interface DCIDeploymentSettings {
   dciReserveSettings: DeployDCIReserveSettings;
+  dciVestingManagerSettings: DeployDCIVestingManagerSettings;
   forceRedeploy?: boolean;
 }
 
 export interface DCIDeployment {
   dciReserve: Address;
+  dciVestingManager: Address;
 }
 
 export async function deploy(
@@ -31,8 +37,14 @@ export async function deploy(
     settings?.dciReserveSettings ?? {}
   );
 
+  const dciVestingManager = await deployDCIVestingManager(
+    deployer,
+    settings?.dciVestingManagerSettings ?? {}
+  );
+
   const deployment: DCIDeployment = {
     dciReserve: dciReserve,
+    dciVestingManager: dciVestingManager,
   };
   await deployer.saveDeployment({
     deploymentName: "latest.json",
