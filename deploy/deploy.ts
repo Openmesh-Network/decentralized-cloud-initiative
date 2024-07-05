@@ -24,18 +24,14 @@ export async function deploy(
   settings?: DCIDeploymentSettings
 ): Promise<DCIDeployment> {
   deployer.startContext("lib/vesting");
-  await deployer.deploy({
-    id: "DCIVestingContract",
-    contract: "SingleBeneficiaryLinearERC20TransferVestingProxy",
-  });
-  // if (settings?.forceRedeploy !== undefined && !settings.forceRedeploy) {
-  const existingDeployment = await deployer.loadDeployment({
-    deploymentName: "latest.json",
-  });
-  if (existingDeployment !== undefined) {
-    return existingDeployment;
+  if (settings?.forceRedeploy !== undefined && !settings.forceRedeploy) {
+    const existingDeployment = await deployer.loadDeployment({
+      deploymentName: "latest.json",
+    });
+    if (existingDeployment !== undefined) {
+      return existingDeployment;
+    }
   }
-  //}
 
   const dciReserve = await deployDCIReserve(
     deployer,

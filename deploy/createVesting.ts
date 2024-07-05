@@ -44,5 +44,6 @@ export async function deploy(deployer: Deployer): Promise<void> {
         })
       ),
     ],
+    from: "0x6b221aA392146E31743E1beB5827e88284B09753",
   });
 }

@@ -1,4 +1,4 @@
-export const DCIVestingContractContract = {
+export const DCIVestingContract = {
   address: "0xd43cdD94C9a599c54840b3733a6D9e67bcB7e082",
   abi: [
     { type: "constructor", inputs: [], stateMutability: "nonpayable" },
