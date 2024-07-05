@@ -1,5 +1,5 @@
 export const DCIVestingManagerContract = {
-  address: "0x50638E85C28E89E240D7A1F7a468e125434424ef",
+  address: "0x54f9Bc78A77e39D835b97cB7bcece2e8fe66537a",
   abi: [
     {
       type: "constructor",

@@ -17,25 +17,32 @@ export async function deploy(deployer: Deployer): Promise<void> {
     },
   ];
 
-  for (let i = 0; i < vestings.length; i++) {
-    await deployer.execute({
-      abi: [...OpenmeshAdminContract.abi],
-      to: OpenmeshAdminContract.address,
-      function: "performCall",
-      args: [
-        DCIVestingManagerContract.address,
-        BigInt(0),
+  await deployer.execute({
+    id: "CreateDCIVesting",
+    abi: [...OpenmeshAdminContract.abi],
+    to: OpenmeshAdminContract.address,
+    function: "multicall",
+    args: [
+      vestings.map((vesting) =>
         deployer.viem.encodeFunctionData({
-          abi: DCIVestingManagerContract.abi,
-          functionName: "createVesting",
+          abi: [...OpenmeshAdminContract.abi],
+          functionName: "performCall",
           args: [
-            vestings[i].amount,
-            BigInt(vestings[i].start),
-            BigInt(vestings[i].duration),
-            vestings[i].beneficiary,
+            DCIVestingManagerContract.address,
+            BigInt(0),
+            deployer.viem.encodeFunctionData({
+              abi: DCIVestingManagerContract.abi,
+              functionName: "createVesting",
+              args: [
+                vesting.amount,
+                BigInt(vesting.start),
+                BigInt(vesting.duration),
+                vesting.beneficiary,
+              ],
+            }),
           ],
-        }),
-      ],
-    });
-  }
+        })
+      ),
+    ],
+  });
 }
