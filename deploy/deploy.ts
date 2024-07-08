@@ -23,7 +23,6 @@ export async function deploy(
   deployer: Deployer,
   settings?: DCIDeploymentSettings
 ): Promise<DCIDeployment> {
-  deployer.startContext("lib/vesting");
   if (settings?.forceRedeploy !== undefined && !settings.forceRedeploy) {
     const existingDeployment = await deployer.loadDeployment({
       deploymentName: "latest.json",
